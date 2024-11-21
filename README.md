@@ -25,14 +25,30 @@ Fig 1.為M0的狀態機，主要是負責Instruction memory取值的部分，首
 Fig 2.為M1的狀態機，主要是負責Data memory取值與存值的部分。在Data memory取值的部分，首先當Reset訊號來時，會進入INITIAL state中，進行初始化動作，接著在Reset訊號結束時則會跳至IDLE state，在此狀態主要是閒置狀態，準備接收新的讀取請求，在條件成立時下一個clock進入READ ADDRESS state，此時ARVALID訊號會拉高，並且進入SRAM取值的狀態，所以整個CPU會暫停動作，直到完成取值，在條件成立時下一個clock進入READ DATA state，此時RREADY訊號會拉高，在此狀態下會進行SRAM取值並且將資料傳至CPU進行解碼運算，在條件成立時下一個clock回到IDLE state，CPU暫停結束，完成Data memory取值。在Data memory存值的部分，當CPU計算完的結果要存入SRAM時，寫入訊號DM_WEN_BIT和DM_write_en決定是否進入WRITE_ADDRESS state，當在WRITE_ADDRESS state時，AWVALID訊號會拉高，傳送要寫入SRAM的地址，在條件成立時下一個clock會進入WRITE_DATA state，WVALID訊號會拉高，將要寫入SRAM資料傳輸，並且WLAST訊號會拉高，即表示傳輸最後一筆數據，在條件成立時下一個clock會進入WRITE_RESPONSE  state，當接收到BVALID時即表示SRAM已完成寫入動作，此時拉高BREDAY及會在下一個clock回到IDLE state。
 
 
-![image](https://github.com/user-attachments/assets/156da76f-f4d0-40cc-9ff0-8faa3d683139)
-
-Fig 1.
+![image](https://github.com/user-attachments/assets/e3a08ce8-3830-417e-a3e1-e7f20f7f9c96)
 
 
-![image](https://github.com/user-attachments/assets/dd59e3e8-e090-4cc2-9484-44dcf63f31b1)
+Fig 1.M0 state machine
 
-Fig 2.
+
+![image](https://github.com/user-attachments/assets/84a84894-3525-4b08-8c1d-1df1a716ed41)
+
+
+Fig 2.M1 state machine
+
+
+3.SRAM Wrapper design
+
+
+SRAM Wrapper state machine設計如Fig 3.所示，首先在Reset訊號時會進入INITIAL state進行初始化，Reset訊號結束時則會跳至IDLE state，在此狀態主要是閒置狀態，準備接收新的讀取請求，條件成立時在下一個clock進入READ ADDRESS state，此時接收Master端ARVALID訊號並將ARREADY訊號拉高，在條件成立時下一個clock進入READ DATA state，此時接收Master端RREADY訊號並將RVALID訊號拉高，在此狀態下會會將SRAM讀出的資料讀出傳至CPU Wrapper進行解碼運算，完成讀取instruction資料。
+在Data memory存值的部分，當接收Master端AWVALID訊號時即會進入WRITE_ADDRESS state，當在WRITE_ADDRESS state時，AWREADY訊號會拉高，條件成立時在下一個clock進入WRITE_DATA state，在此state將資料和地址寫入SRAM，並且WLAST訊號會拉高，即表示傳輸最後一筆數據，在下一個clock會進入WRITE_RESPONSE  state，BVALID訊號會拉高，當接收到BREADY時即表示與Master端完成存值得交握，會在下一個clock回到IDLE state。
+
+
+![image](https://github.com/user-attachments/assets/b970d7a7-f4f4-49e6-8a27-2b5f8f678989)
+
+
+Fig 3. SRAM Wrapper state machine
+
 
 
 
