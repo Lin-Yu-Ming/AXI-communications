@@ -10,7 +10,8 @@
         在 AXI 協議中，讀取和寫入操作透過多個不同的Channel來實現，在本設計中這些Channel包括AR Channel、R Channel、AW Channel、W Channel和B Channel。在AR Channel中為發送讀取SRAM資料的地址，R Channel為讀取SRAM傳送的資料，AW Channel為寫入為SRAM資料的地址，W Channel為寫入SRAM的資料，B Channel為寫入操作的結果進行回應，其中每一個Channel會透過VALID和READY 這種handshake機制確保master端和slave端之間訊息的交握。
 
 
-  ![image](https://github.com/user-attachments/assets/2458a541-aa87-4c36-b10b-10177bfef353)
+ ![image](https://github.com/user-attachments/assets/57462c70-f264-4181-83b1-f25d6d749210)
+
 
   
 
